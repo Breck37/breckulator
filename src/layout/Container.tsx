@@ -7,7 +7,7 @@ interface Props {
 
 const Container = ({ children }: Props) => (
     <div className="container">
-        Container
+        {children}
     </div>
 )
 
