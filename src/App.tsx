@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container } from './layout'
-import { Calculator, Header } from './components/';
+import { Calculator } from './components/';
 import './App.scss';
 
 function App() {
