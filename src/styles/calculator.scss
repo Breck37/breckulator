@@ -4,7 +4,7 @@
     position: relative;
     background-color: $primary_black;
     border-radius: 8px;
-    width: 450px;
+    width: 350px;
     height: 600px; 
     display: flex; 
     flex-direction: column;
@@ -40,10 +40,27 @@
 }
 
 .basic > .screen-container > .screen-top > .logo {
-    background-color: blue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     flex: 1;
-    height: 100%;
+    height: 65%;
     margin-right: 12px;
+    font-family: "Brush Script MT", cursive;
+
+    > h2, h4, p {
+        margin: 0
+    }
+
+    > p {
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    > h4 {
+        margin-top: -8px;
+    }
 }
 
 .basic > .screen-container > .screen-top > .solar {
