@@ -85,12 +85,11 @@
   border-radius: 4px;
   background: gray;    
   border: 1px solid $primary_black;
-  transform: skewX(-8deg);
   font-size: 42px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  overflow-x: scroll;
+  overflow: hidden;
   white-space: nowrap;
   scroll-behavior: smooth;
 }
@@ -107,11 +106,16 @@
     flex-direction: column;
     flex: 1;
     width: 100%;
+    padding: 24px 0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .row {
     display: flex;
     flex: 1;
+    height: 55px;
+    margin: 0 24px;
 }
 
 .basic-keys {

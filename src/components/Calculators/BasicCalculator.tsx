@@ -5,6 +5,10 @@ interface BasicOperatorFunctions {
  [key: string]: (a: number, b: number, cFn: any) => void;
 }
 
+interface BasicCalcFunctions {
+    [key: string]: (args?: any) => void;
+}
+
 const basicOperatorFunctions: BasicOperatorFunctions = {
     minus: (a: number, b: number, cFn: (args: any) => void) => {
         const result = a - b;
@@ -17,6 +21,11 @@ const BasicCalculator = () => {
     const [currentValue, setCurrentValue] = useState<string>('')
     const [operations, setOperations] = useState<string[]>([]);
     const [total, setTotal] = useState<string | number | any>(0);
+    const [isPowerOn, setIsPowerOn] = useState<boolean>(false);
+
+    const basicFunctions: BasicCalcFunctions = {
+        power: () => isPowerOn ? setTotal(0): setIsPowerOn(true)
+    }
 
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         if(Boolean(basicOperatorFunctions[event.currentTarget.value])) {
@@ -37,13 +46,18 @@ const BasicCalculator = () => {
         }
     }
 
+    const setFunction = (selectedFunction: React.MouseEvent<HTMLButtonElement>) => {
+        console.log(basicFunctions[selectedFunction.currentTarget.value],selectedFunction.currentTarget.value )
+        return basicFunctions[selectedFunction.currentTarget.value]()
+    }
+
     const equate = () => {
         const newTotal = operations.reduce((a, c, i, arr) => {
             return a
         }, 0)
         setTotal(newTotal)
     };
-    
+
     return (
         <div className="basic">
             <div className="screen-container">
@@ -55,7 +69,7 @@ const BasicCalculator = () => {
                     <div className="solar"></div>
                 </div>
             <div className="screen">
-                {currentValue ? currentValue : total}
+                {currentValue && isPowerOn ? currentValue : isPowerOn ? total : ''}
             </div>
             </div>
             <div className="basic-keys-container">
@@ -64,7 +78,7 @@ const BasicCalculator = () => {
                     <button onClick={updateCurrentValue} value="percent" className="operator-key divide">%</button>
                     <button onClick={updateCurrentValue} value="square" className="operator-key divide">√</button>
                     <button onClick={updateCurrentValue} value="clearEntry" className="basic-key equals">CE</button>
-                    <button onClick={updateCurrentValue} value="power" className="basic-key divide">On/C</button>
+                    <button onClick={setFunction} value="power" className="basic-key divide">On/C</button>
                 </div>
 
                 <div className="row">
@@ -82,16 +96,16 @@ const BasicCalculator = () => {
                 </div>
 
                 <div className="row">
-                    <button onClick={updateCurrentValue}   className="basic-key 6 ">6</button>
-                    <button onClick={updateCurrentValue}   className="basic-key 5">5</button>
-                    <button onClick={updateCurrentValue}   className="basic-key 4">4</button>
+                    <button onClick={updateCurrentValue} value={6}   className="basic-key 6 ">6</button>
+                    <button onClick={updateCurrentValue} value={5}  className="basic-key 5">5</button>
+                    <button onClick={updateCurrentValue} value={4} className="basic-key 4">4</button>
                     <button onClick={includeOperator} value="minus" className="operator-key minus"> - </button>
                 </div>
 
                 <div className="small row">
-                    <button onClick={updateCurrentValue}   className="basic-key three">3</button>
-                    <button onClick={updateCurrentValue}   className="basic-key two">2</button>
-                    <button onClick={updateCurrentValue}   className="basic-key one">1</button>
+                    <button onClick={updateCurrentValue} value={3}  className="basic-key three">3</button>
+                    <button onClick={updateCurrentValue} value={2}  className="basic-key two">2</button>
+                    <button onClick={updateCurrentValue} value={1}   className="basic-key one">1</button>
                 </div>
 
                 <div className="small row">
