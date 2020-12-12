@@ -28,6 +28,7 @@ const BasicCalculator = () => {
     }
 
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
+        if(!isPowerOn) return;
         if(Boolean(basicOperatorFunctions[event.currentTarget.value])) {
             includeOperator(event);
             return;
@@ -77,8 +78,8 @@ const BasicCalculator = () => {
                     <button onClick={updateCurrentValue} value="invert" className="operator-key divide">+/-</button>
                     <button onClick={updateCurrentValue} value="percent" className="operator-key divide">%</button>
                     <button onClick={updateCurrentValue} value="square" className="operator-key divide">√</button>
-                    <button onClick={updateCurrentValue} value="clearEntry" className="basic-key equals">CE</button>
-                    <button onClick={setFunction} value="power" className="basic-key divide">On/C</button>
+                    <button onClick={updateCurrentValue} value="clearEntry" className="basic-key equals red">CE</button>
+                    <button onClick={setFunction} value="power" className="basic-key divide red">On/C</button>
                 </div>
 
                 <div className="row">
@@ -102,16 +103,19 @@ const BasicCalculator = () => {
                     <button onClick={includeOperator} value="minus" className="operator-key minus"> - </button>
                 </div>
 
-                <div className="small row">
-                    <button onClick={updateCurrentValue} value={3}  className="basic-key three">3</button>
-                    <button onClick={updateCurrentValue} value={2}  className="basic-key two">2</button>
-                    <button onClick={updateCurrentValue} value={1}   className="basic-key one">1</button>
-                </div>
-
-                <div className="small row">
-                    <button onClick={updateCurrentValue} value={0} className="basic-key 0">0</button>
-                    <button onClick={includeOperator} value="dot" className="basic-key dot">.</button>
-                    <button onClick={equate} className="basic-key clear">{"="}</button>
+                <div className="bottom-container">
+                    <div>
+                        <div className="small row">
+                            <button onClick={updateCurrentValue} value={3}  className="basic-key three">3</button>
+                            <button onClick={updateCurrentValue} value={2}  className="basic-key two">2</button>
+                            <button onClick={updateCurrentValue} value={1}   className="basic-key one">1</button>
+                        </div>
+                        <div className="small row">
+                            <button onClick={updateCurrentValue} value={0} className="basic-key 0">0</button>
+                            <button onClick={includeOperator} value="dot" className="basic-key dot">.</button>
+                            <button onClick={equate} className="basic-key clear">{"="}</button>
+                        </div>
+                    </div>
                     <button onClick={includeOperator} value="plus" className=" plus operator-key plus">+</button>
                 </div>
             </div>

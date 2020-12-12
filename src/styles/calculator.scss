@@ -1,5 +1,11 @@
 @import './colors.scss';
 
+button {
+    background-color: $primary_black;
+    color: $super_white;
+    font-weight: 700;
+}
+
 .basic {
     position: relative;
     background-color: $primary_black;
@@ -111,11 +117,27 @@
     border-bottom-right-radius: 8px;
 }
 
+.top {
+    > button {
+        border-radius: 4px;
+        height: 65%;
+    }
+}
+
 .row {
     display: flex;
     flex: 1;
     height: 55px;
     margin: 0 24px;
+
+    > button {
+        flex: 1;
+        margin: 4px;
+    }
+}
+
+.small {
+    margin: 0 0 0 24px;
 }
 
 .basic-keys {
@@ -161,4 +183,20 @@
     flex-direction: column;
 }
 
+.bottom-container {
+    display: flex;
+    margin-right: 24px;
 
+    > div {
+        flex: 1;
+    }
+    > button {
+        flex: 0.208;
+        margin: 4px;
+
+    }
+}
+
+.red {
+    background-color: rgb(172, 8, 8);
+}
