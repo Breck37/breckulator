@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../../styles/calculator.scss';
 
 interface BasicOperatorFunctions {
@@ -17,18 +17,33 @@ const basicOperatorFunctions: BasicOperatorFunctions = {
     divide: (a: number, b: number, cfn: (args: any) => void) => cfn(a / b),
 };
 
+
 const BasicCalculator = () => {
     const [currentValue, setCurrentValue] = useState<string>('')
+    const [lastValue, setLastValue] = useState<string>('')
     const [operations, setOperations] = useState<string[]>([]);
     const [total, setTotal] = useState<string | number | any>(0);
     const [isPowerOn, setIsPowerOn] = useState<boolean>(false);
+    const [fontSize, setFontSize] = useState(42)
+
+    useEffect(() => {
+        var elem = document.getElementById('screen');
+        if(elem && elem?.scrollWidth > 322) {
+            setFontSize(fontSize - 1)
+        }
+    }, [currentValue, fontSize])
 
     const basicFunctions: BasicCalcFunctions = {
-        power: () => isPowerOn ? setTotal(0): setIsPowerOn(true)
+        power: () => isPowerOn && currentValue ? setCurrentValue('') : setIsPowerOn(!isPowerOn),
+        percent: (a: number) => {
+            setCurrentValue(a / 100 + '')
+            setTotal(a / 100)
+        },
     }
 
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         if(!isPowerOn) return;
+        setLastValue(event.currentTarget.value);
         if(Boolean(basicOperatorFunctions[event.currentTarget.value])) {
             includeOperator(event);
             return;
@@ -42,14 +57,14 @@ const BasicCalculator = () => {
     }
 
     const includeOperator = (operator: React.MouseEvent<HTMLButtonElement>) => {
+        setLastValue(currentValue);
         if(operator.currentTarget.value !== operations[operations.length - 1]){
             updateOperations(operator)
         }
     }
 
     const setFunction = (selectedFunction: React.MouseEvent<HTMLButtonElement>) => {
-        console.log(basicFunctions[selectedFunction.currentTarget.value],selectedFunction.currentTarget.value )
-        return basicFunctions[selectedFunction.currentTarget.value]()
+        return basicFunctions[selectedFunction.currentTarget.value](currentValue)
     }
 
     const equate = () => {
@@ -69,14 +84,14 @@ const BasicCalculator = () => {
                     </div>
                     <div className="solar"></div>
                 </div>
-            <div className="screen">
+            <div id="screen" className="screen" style={{fontSize}}>
                 {currentValue && isPowerOn ? currentValue : isPowerOn ? total : ''}
             </div>
             </div>
             <div className="basic-keys-container">
                 <div className="top row">
                     <button onClick={updateCurrentValue} value="invert" className="operator-key divide">+/-</button>
-                    <button onClick={updateCurrentValue} value="percent" className="operator-key divide">%</button>
+                    <button onClick={setFunction} value="percent" className="operator-key divide">%</button>
                     <button onClick={updateCurrentValue} value="square" className="operator-key divide">√</button>
                     <button onClick={updateCurrentValue} value="clearEntry" className="basic-key equals red">CE</button>
                     <button onClick={setFunction} value="power" className="basic-key divide red">On/C</button>
