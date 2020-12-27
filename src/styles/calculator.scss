@@ -8,13 +8,14 @@ button {
 
 .basic {
     position: relative;
-    background-color: $primary_black;
-    border-radius: 8px;
+    border-radius: 22px;
     width: 360px;
     height: 600px; 
     display: flex; 
     flex-direction: column;
     align-items: center;
+    -webkit-box-shadow: 5px 5px 10px 0px rgba(0,0,0,0.62); 
+    box-shadow: 5px 5px 10px 0px rgba(0,0,0,0.62);
 }
 
 .calculator-container {
@@ -29,7 +30,7 @@ button {
 }
 
 .basic > .screen-container {
-    background-color: blanchedalmond;
+    background-color: $primary-bland;
     flex: 0.75;
     width: 100%;
     border-radius: 22px 22px 0 0;
@@ -91,10 +92,8 @@ button {
   border-radius: 4px;
   background: gray;    
   border: 1px solid $primary_black;
-//   font-size: 42px;
-  display: flex;
-//   justify-content: flex-end;
   align-items: center;
+  text-align: right;
   overflow: auto;
   white-space: nowrap;
   scroll-behavior: auto;
@@ -103,11 +102,11 @@ button {
 .basic > .middle-skinny {
     flex: 0.2;
     width: 100%;
-    background-color: blanchedalmond;
+    background-color: $primary-bland;
 }
 
 .basic > .basic-keys-container {
-    background-color: aqua;
+    background-color: $primary-bland;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -165,7 +164,7 @@ button {
 
 
 .basic-keyboard > .basic-key, .basic-arithmetic > .basic-key {
-    border: solid 1px black;
+    border: solid 1px $primary_black;
     border-radius: 4px; 
     transform: skewX(-4deg);
     font-size: 42px;
@@ -178,7 +177,6 @@ button {
 
 .basic-general {
     flex: 1;
-    background-color: aquamarine;
     display: flex;
     flex-direction: column;
 }
@@ -198,5 +196,5 @@ button {
 }
 
 .red {
-    background-color: rgb(172, 8, 8);
+    background-color: $primary-power-red;
 }

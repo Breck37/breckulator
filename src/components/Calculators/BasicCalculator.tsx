@@ -24,20 +24,32 @@ const BasicCalculator = () => {
     const [operations, setOperations] = useState<string[]>([]);
     const [total, setTotal] = useState<string | number | any>(0);
     const [isPowerOn, setIsPowerOn] = useState<boolean>(false);
-    const [fontSize, setFontSize] = useState(42)
+    const [fontSize, setFontSize] = useState(5)
 
     useEffect(() => {
         var elem = document.getElementById('screen');
+
         if(elem && elem?.scrollWidth > 322) {
-            setFontSize(fontSize - 1)
+            setFontSize(fontSize - 0.1)
+        } else if (currentValue.length < 8 && fontSize < 5) {
+            setFontSize(5);
         }
-    }, [currentValue, fontSize])
+    }, [currentValue, fontSize, lastValue])
 
     const basicFunctions: BasicCalcFunctions = {
-        power: () => isPowerOn && currentValue ? setCurrentValue('') : setIsPowerOn(!isPowerOn),
+        power: isPowerOn && currentValue ? () => { 
+            setFontSize(5);
+            setCurrentValue('');
+        } : () => setIsPowerOn(!isPowerOn),
         percent: (a: number) => {
             setCurrentValue(a / 100 + '')
             setTotal(a / 100)
+        },
+        clearEntry: (a: string) => {
+            if(!a) return;
+            const valueWithRemovedEntry = a.split('');
+            valueWithRemovedEntry.pop();
+            setCurrentValue(valueWithRemovedEntry.join(''));
         },
     }
 
@@ -84,7 +96,7 @@ const BasicCalculator = () => {
                     </div>
                     <div className="solar"></div>
                 </div>
-            <div id="screen" className="screen" style={{fontSize}}>
+            <div id="screen" className="screen" style={{fontSize: `${fontSize}vw`, display: fontSize < 5 ? 'flex' : 'block'}}>
                 {currentValue && isPowerOn ? currentValue : isPowerOn ? total : ''}
             </div>
             </div>
@@ -93,7 +105,7 @@ const BasicCalculator = () => {
                     <button onClick={updateCurrentValue} value="invert" className="operator-key divide">+/-</button>
                     <button onClick={setFunction} value="percent" className="operator-key divide">%</button>
                     <button onClick={updateCurrentValue} value="square" className="operator-key divide">√</button>
-                    <button onClick={updateCurrentValue} value="clearEntry" className="basic-key equals red">CE</button>
+                    <button onClick={setFunction} value="clearEntry" className="basic-key equals red">CE</button>
                     <button onClick={setFunction} value="power" className="basic-key divide red">On/C</button>
                 </div>
 
