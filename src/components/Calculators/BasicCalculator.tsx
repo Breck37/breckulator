@@ -39,17 +39,29 @@ const BasicCalculator = () => {
     const basicFunctions: BasicCalcFunctions = {
         power: isPowerOn && currentValue ? () => { 
             setFontSize(5);
+            setTotal(0)
             setCurrentValue('');
         } : () => setIsPowerOn(!isPowerOn),
+        clearEntry: (a: string) => {
+            if(!a) return;
+            const splitEntry = a.split('');
+            splitEntry.pop();
+            setCurrentValue(splitEntry.join(''));
+        },
+        square: () => null,
         percent: (a: number) => {
             setCurrentValue(a / 100 + '')
             setTotal(a / 100)
         },
-        clearEntry: (a: string) => {
-            if(!a) return;
-            const valueWithRemovedEntry = a.split('');
-            valueWithRemovedEntry.pop();
-            setCurrentValue(valueWithRemovedEntry.join(''));
+        invert: (a: string) => {
+            const entryToInvert = a.split('')
+            if(entryToInvert.includes('-')) {
+                entryToInvert.shift();
+                setCurrentValue(entryToInvert.join(''));
+            } else {
+                entryToInvert.unshift('-');
+                setCurrentValue(entryToInvert.join(''))
+            }   
         },
     }
 
@@ -62,7 +74,6 @@ const BasicCalculator = () => {
         }
         setCurrentValue(currentValue + event.currentTarget.value)
     }
-
 
     const updateOperations = (event: React.MouseEvent<HTMLButtonElement>) => {
         setOperations([...operations, event.currentTarget.value])
@@ -102,7 +113,7 @@ const BasicCalculator = () => {
             </div>
             <div className="basic-keys-container">
                 <div className="top row">
-                    <button onClick={updateCurrentValue} value="invert" className="operator-key divide">+/-</button>
+                    <button onClick={setFunction} value="invert" className="operator-key divide">+/-</button>
                     <button onClick={setFunction} value="percent" className="operator-key divide">%</button>
                     <button onClick={updateCurrentValue} value="square" className="operator-key divide">√</button>
                     <button onClick={setFunction} value="clearEntry" className="basic-key equals red">CE</button>
