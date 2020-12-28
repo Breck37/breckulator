@@ -9,6 +9,10 @@ interface BasicCalcFunctions {
     [key: string]: (args?: any) => void;
 }
 
+interface MemoryCalcFunctions {
+    [key: string]: (currentMemory: string, memoryIsActive: boolean, currentValue: string, ) => string;
+}
+
 const basicOperatorFunctions: BasicOperatorFunctions = {
     minus: (a: number, b: number, cFn: (args: any) => void) => {
         const result = a - b;
@@ -21,6 +25,8 @@ const basicOperatorFunctions: BasicOperatorFunctions = {
 const BasicCalculator = () => {
     const [currentValue, setCurrentValue] = useState<string>('')
     const [lastValue, setLastValue] = useState<string>('')
+    const [memory, setMemory] = useState<string>('0')
+    const [memoryIsActive, setMemoryIsActive] = useState<boolean>(false)
     const [operations, setOperations] = useState<string[]>([]);
     const [total, setTotal] = useState<string | number | any>(0);
     const [isPowerOn, setIsPowerOn] = useState<boolean>(false);
@@ -34,38 +40,73 @@ const BasicCalculator = () => {
         } else if (currentValue.length < 8 && fontSize < 5) {
             setFontSize(5);
         }
-    }, [currentValue, fontSize, lastValue])
+    }, [currentValue, fontSize])
 
     const basicFunctions: BasicCalcFunctions = {
-        power: isPowerOn && currentValue ? () => { 
+        power: isPowerOn && (currentValue || memory) ? () => { 
+            console.log('HIT', memoryIsActive)
+            setMemoryIsActive(false);
             setFontSize(5);
             setTotal(0)
             setCurrentValue('');
-        } : () => setIsPowerOn(!isPowerOn),
+            setMemory('0');
+        } : () => {
+            setIsPowerOn(!isPowerOn)
+        },
         clearEntry: (a: string) => {
             if(!a) return;
             const splitEntry = a.split('');
             splitEntry.pop();
-            setCurrentValue(splitEntry.join(''));
+            if(memoryIsActive) {
+                setMemory(splitEntry.join(''));
+            } else {
+                setCurrentValue(splitEntry.join(''));
+            }
         },
-        square: () => null,
-        percent: (a: number) => {
-            setCurrentValue(a / 100 + '')
-            setTotal(a / 100)
+        square: (a: string) => {
+            const squared = Math.sqrt(parseInt(a));
+            if(memoryIsActive) {
+                setMemory(`${squared}`)
+            } else {
+                setCurrentValue(`${squared}`)
+            }
+        },
+        percent: (a: string) => {
+            if(memoryIsActive) {
+                setMemory(parseInt(a) / 100 + '')
+            } else {
+                setCurrentValue(parseInt(a) / 100 + '')
+            }
+            setTotal(parseInt(a) / 100)
         },
         invert: (a: string) => {
             const entryToInvert = a.split('')
+            const setFunction = memoryIsActive ? setMemory : setCurrentValue;
             if(entryToInvert.includes('-')) {
                 entryToInvert.shift();
-                setCurrentValue(entryToInvert.join(''));
+                setFunction(entryToInvert.join(''));
             } else {
                 entryToInvert.unshift('-');
-                setCurrentValue(entryToInvert.join(''))
+                setFunction(entryToInvert.join(''))
             }   
         },
     }
 
+    const memoryOperatorFunctions: MemoryCalcFunctions = {
+        MRC: (currentMemory, memoryIsActive) => {
+            if(memoryIsActive) return '0';
+            return currentMemory;
+        },
+        'M-': (currentMemory, memoryIsActive, currentValue) => {
+            return `${parseInt(currentMemory) - parseInt(currentValue)}`
+        },
+        'M+': (currentMemory, memoryIsActive, currentValue) => {
+            return `${parseInt(currentMemory) + parseInt(currentValue)}`
+        },
+    };
+
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setMemoryIsActive(false);
         if(!isPowerOn) return;
         setLastValue(event.currentTarget.value);
         if(Boolean(basicOperatorFunctions[event.currentTarget.value])) {
@@ -97,6 +138,16 @@ const BasicCalculator = () => {
         setTotal(newTotal)
     };
 
+    const handleMemoryChange = (memoryFunction: React.MouseEvent<HTMLButtonElement>) => {
+        const memoryResult = memoryOperatorFunctions[memoryFunction.currentTarget.value](memory, memoryIsActive, currentValue)
+
+        if(memoryResult !== memory) {
+            setMemory(memoryResult)
+        }
+        setMemoryIsActive(true)
+        setCurrentValue('')
+    };
+
     return (
         <div className="basic">
             <div className="screen-container">
@@ -108,22 +159,24 @@ const BasicCalculator = () => {
                     <div className="solar"></div>
                 </div>
             <div id="screen" className="screen" style={{fontSize: `${fontSize}vw`, display: fontSize < 5 ? 'flex' : 'block'}}>
-                {currentValue && isPowerOn ? currentValue : isPowerOn ? total : ''}
+                {memoryIsActive && isPowerOn ? memory : 
+                    currentValue && isPowerOn ? currentValue : 
+                        isPowerOn ? total : ''}
             </div>
             </div>
             <div className="basic-keys-container">
                 <div className="top row">
                     <button onClick={setFunction} value="invert" className="operator-key divide">+/-</button>
                     <button onClick={setFunction} value="percent" className="operator-key divide">%</button>
-                    <button onClick={updateCurrentValue} value="square" className="operator-key divide">√</button>
+                    <button onClick={setFunction} value="square" className="operator-key divide">√</button>
                     <button onClick={setFunction} value="clearEntry" className="basic-key equals red">CE</button>
                     <button onClick={setFunction} value="power" className="basic-key divide red">On/C</button>
                 </div>
 
                 <div className="row">
-                    <button onClick={updateCurrentValue} value="MRC" className="basic-key 9">MRC</button>
-                    <button onClick={updateCurrentValue} value="M-" className="basic-key 9">M-</button>
-                    <button onClick={updateCurrentValue} value="M+" className="basic-key 9">M+</button>
+                    <button onClick={handleMemoryChange} value="MRC" className="basic-key 9">MRC</button>
+                    <button onClick={handleMemoryChange} value="M-" className="basic-key 9">M-</button>
+                    <button onClick={handleMemoryChange} value="M+" className="basic-key 9">M+</button>
                     <button onClick={includeOperator} value="divide" className="operator-key divide">÷</button>
                 </div>
 
