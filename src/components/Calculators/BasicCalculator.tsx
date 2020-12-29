@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import '../../styles/calculator.scss';
 
 interface BasicOperatorFunctions {
- [key: string]: (a: number, b: number, cFn: any) => void;
+ [key: string]: (a: string, b: string, cFn: any) => void;
 }
 
 interface BasicCalcFunctions {
@@ -14,11 +14,14 @@ interface MemoryCalcFunctions {
 }
 
 const basicOperatorFunctions: BasicOperatorFunctions = {
-    minus: (a: number, b: number, cFn: (args: any) => void) => {
-        const result = a - b;
+    plus: () => {},
+    minus: (a: string, b: string, cFn: (args: any) => void) => {
+        const result = parseInt(a) - parseInt(b);
         cFn(result);
+        return result;
     },
-    divide: (a: number, b: number, cfn: (args: any) => void) => cfn(a / b),
+    multiply: () => {},
+    divide: (a: string, b: string, cfn: (args: any) => void) => cfn(parseInt(a) / parseInt(b)),
 };
 
 
@@ -31,6 +34,12 @@ const BasicCalculator = () => {
     const [total, setTotal] = useState<string | number | any>(0);
     const [isPowerOn, setIsPowerOn] = useState<boolean>(false);
     const [fontSize, setFontSize] = useState(5)
+    console.log({
+        currentValue,
+        operations,
+        lastValue,
+        total
+    })
 
     useEffect(() => {
         var elem = document.getElementById('screen');
@@ -43,13 +52,9 @@ const BasicCalculator = () => {
     }, [currentValue, fontSize])
 
     const basicFunctions: BasicCalcFunctions = {
-        power: isPowerOn && (currentValue || memory !== '0') ? () => { 
+        power: isPowerOn && (currentValue || lastValue || memory !== '0') ? () => { 
             console.log('HIT', memoryIsActive)
-            setMemoryIsActive(false);
-            setFontSize(5);
-            setTotal(0)
-            setCurrentValue('');
-            setMemory('0');
+            resetState();
         } : () => {
             setMemory('0')
             setMemoryIsActive(false);
@@ -94,6 +99,16 @@ const BasicCalculator = () => {
         },
     }
 
+    const resetState = () => {
+            setMemoryIsActive(false);
+            setFontSize(5);
+            setTotal(0)
+            setCurrentValue('');
+            setLastValue('');
+            setOperations([])
+            setMemory('0');
+    }
+
     const memoryOperatorFunctions: MemoryCalcFunctions = {
         MRC: (currentMemory, memoryIsActive) => {
             if(memoryIsActive) return '0';
@@ -110,7 +125,6 @@ const BasicCalculator = () => {
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         setMemoryIsActive(false);
         if(!isPowerOn) return;
-        setLastValue(event.currentTarget.value);
         if(Boolean(basicOperatorFunctions[event.currentTarget.value])) {
             includeOperator(event);
             return;
@@ -123,8 +137,11 @@ const BasicCalculator = () => {
     }
 
     const includeOperator = (operator: React.MouseEvent<HTMLButtonElement>) => {
-        setLastValue(currentValue);
+        if(!currentValue) return;
         if(operator.currentTarget.value !== operations[operations.length - 1]){
+            setLastValue(currentValue)
+            setTotal(currentValue)
+            setCurrentValue('')
             updateOperations(operator)
         }
     }
@@ -134,20 +151,21 @@ const BasicCalculator = () => {
     }
 
     const equate = () => {
-        const newTotal = operations.reduce((a, c, i, arr) => {
-            return a
-        }, 0)
-        setTotal(newTotal)
+        if(operations.length > 0 && lastValue) {
+            const result = basicOperatorFunctions[operations[operations.length - 1]](lastValue, currentValue, setCurrentValue);
+            console.log({ result, currentValue, lastValue, setCurrentValue })
+            return;
+        }
     };
 
     const handleMemoryChange = (memoryFunction: React.MouseEvent<HTMLButtonElement>) => {
-        const memoryResult = memoryOperatorFunctions[memoryFunction.currentTarget.value](memory, memoryIsActive, currentValue)
-
+        if(!currentValue) return;
+        const memoryResult = memoryOperatorFunctions[memoryFunction.currentTarget.value](memory, memoryIsActive, currentValue);
         if(memoryResult !== memory) {
-            setMemory(memoryResult)
+            setMemory(memoryResult);
         }
-        setMemoryIsActive(true)
-        setCurrentValue('')
+        setMemoryIsActive(true);
+        setCurrentValue('');
     };
 
     return (
@@ -205,7 +223,7 @@ const BasicCalculator = () => {
                         </div>
                         <div className="small row">
                             <button onClick={updateCurrentValue} value={0} className="basic-key 0">0</button>
-                            <button onClick={includeOperator} value="dot" className="basic-key dot">.</button>
+                            <button onClick={updateCurrentValue} value={'.'} className="basic-key dot">.</button>
                             <button onClick={equate} className="basic-key clear">{"="}</button>
                         </div>
                     </div>
