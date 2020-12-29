@@ -14,14 +14,17 @@ interface MemoryCalcFunctions {
 }
 
 const basicOperatorFunctions: BasicOperatorFunctions = {
-    plus: () => {},
-    minus: (a: string, b: string, cFn: (args: any) => void) => {
+    plus: (a: string, b: string, cFn: (args: any) => string) => {
+        const result = parseInt(a) + parseInt(b);
+        cFn(result);
+        return result;
+    },
+    minus: (a: string, b: string, cFn: (args: any) => string) => {
         const result = parseInt(a) - parseInt(b);
         cFn(result);
         return result;
     },
-    multiply: () => {},
-    divide: (a: string, b: string, cfn: (args: any) => void) => cfn(parseInt(a) / parseInt(b)),
+    divide: (a: string, b: string, cfn: (args: any) => string) => cfn(parseInt(a) / parseInt(b)),
 };
 
 
@@ -152,9 +155,13 @@ const BasicCalculator = () => {
 
     const equate = () => {
         if(operations.length > 0 && lastValue) {
-            const result = basicOperatorFunctions[operations[operations.length - 1]](lastValue, currentValue, setCurrentValue);
-            console.log({ result, currentValue, lastValue, setCurrentValue })
+            basicOperatorFunctions[operations[operations.length - 1]](lastValue, currentValue, setTotal);
+            setCurrentValue('')
+            setLastValue('')
             return;
+        } else if (operations.length > 0 && total) {
+            basicOperatorFunctions[operations[operations.length - 1]](total, currentValue, setTotal);
+            setCurrentValue('')
         }
     };
 
