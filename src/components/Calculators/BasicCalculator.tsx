@@ -43,7 +43,7 @@ const BasicCalculator = () => {
     }, [currentValue, fontSize])
 
     const basicFunctions: BasicCalcFunctions = {
-        power: isPowerOn && (currentValue || memory) ? () => { 
+        power: isPowerOn && (currentValue || memory !== '0') ? () => { 
             console.log('HIT', memoryIsActive)
             setMemoryIsActive(false);
             setFontSize(5);
@@ -51,6 +51,8 @@ const BasicCalculator = () => {
             setCurrentValue('');
             setMemory('0');
         } : () => {
+            setMemory('0')
+            setMemoryIsActive(false);
             setIsPowerOn(!isPowerOn)
         },
         clearEntry: (a: string) => {
