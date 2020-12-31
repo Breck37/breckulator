@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Deploy Preview
 
-[Beckulator.com](https://beckulator.com)
+[Breckulator.com](https://breckulator.com)
 
 Project modeled after [Victor 7000](https://www.victortech.com/product/700)
 
