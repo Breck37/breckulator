@@ -33,11 +33,28 @@ const BasicCalculator = () => {
 
     useEffect(() => {
         var elem = document.getElementById('screen');
-
-        if(elem && elem?.scrollWidth > 322) {
+        console.log(currentValue.length, elem?.scrollWidth, fontSize)
+        if(elem && elem?.scrollWidth > 326 && fontSize > 1) {
             setFontSize(fontSize - 0.1)
         } else if (currentValue.length < 8 && fontSize < 5) {
             setFontSize(5);
+        } else if (elem && elem?.scrollWidth === 246 && currentValue.length > 10) {
+            setCurrentValue('# too long')
+            setTimeout(() => {
+                setCurrentValue(' ')
+            }, 500);
+            setTimeout(() => {
+                setCurrentValue('# too long')
+            }, 1000);
+            setTimeout(() => {
+                setCurrentValue(' ')
+            }, 1500);
+            setTimeout(() => {
+                setCurrentValue('# too long')
+            }, 2000);
+            setTimeout(() => {
+                setCurrentValue('')
+            }, 2500);
         }
     }, [currentValue, fontSize])
 
@@ -217,12 +234,12 @@ const BasicCalculator = () => {
                             <button onClick={updateCurrentValue} value={1}   className="basic-key one">1</button>
                         </div>
                         <div className="small row">
-                            <button onClick={updateCurrentValue} value={0} className="basic-key 0">0</button>
+                            <button onClick={updateCurrentValue} value={0} className="basic-key zero">0</button>
                             <button onClick={updateCurrentValue} value={'.'} className="basic-key dot">.</button>
                             <button onClick={equate} className="basic-key clear">{"="}</button>
                         </div>
                     </div>
-                    <button onClick={includeOperator} value="plus" className=" plus operator-key plus">+</button>
+                    <button onClick={includeOperator} value="plus" className="operator-key plus">+</button>
                 </div>
             </div>
         </div>
