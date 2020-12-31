@@ -128,6 +128,10 @@ const BasicCalculator = () => {
         setOperations([event.currentTarget.value])
     }
 
+    const setFunction = (selectedFunction: React.MouseEvent<HTMLButtonElement>) => {
+        return basicFunctions[selectedFunction.currentTarget.value](currentValue)
+    }
+
     const includeOperator = (operator: React.MouseEvent<HTMLButtonElement>) => {
         if(!currentValue) return;
 
@@ -136,10 +140,6 @@ const BasicCalculator = () => {
         }
         setLastValue(currentValue)
         updateOperations(operator)
-    }
-
-    const setFunction = (selectedFunction: React.MouseEvent<HTMLButtonElement>) => {
-        return basicFunctions[selectedFunction.currentTarget.value](currentValue)
     }
 
     const equate = () => {
