@@ -14,7 +14,7 @@ button:focus {
 .basic {
     position: relative;
     border-radius: 22px;
-    width: 360px;
+    width: 414px;
     height: 600px;
     display: flex;
     flex-direction: column;
@@ -140,12 +140,6 @@ button:focus {
     overflow: auto;
     white-space: nowrap;
     scroll-behavior: auto;
-
-    @media screen and (max-width: 412px) {
-        display: flex !important;
-        justify-content: flex-end !important;
-        font-size: 15vw !important;
-    }
 }
 
 .basic > .middle-skinny {

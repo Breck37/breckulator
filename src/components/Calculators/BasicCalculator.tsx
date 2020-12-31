@@ -29,13 +29,15 @@ const BasicCalculator = () => {
     const [operations, setOperations] = useState<string[]>([]);
     const [total, setTotal] = useState<string | number | any>(0);
     const [isPowerOn, setIsPowerOn] = useState<boolean>(false);
-    const [fontSize, setFontSize] = useState(5)
+    const [fontSize, setFontSize] = useState(64)
 
     useEffect(() => {
         var elem = document.getElementById('screen');
-        console.log(currentValue.length, elem?.scrollWidth, fontSize)
-        if(elem && elem?.scrollWidth > 326 && fontSize > 1) {
-            setFontSize(fontSize - 0.1)
+
+        if(elem &&  elem?.scrollWidth > 380 && fontSize > 2) {
+            setFontSize(fontSize - 2)
+        } else if(elem &&  elem?.scrollWidth > 326 && elem.scrollWidth !== 380 && elem.scrollWidth !== 365 && fontSize > 1) {
+            setFontSize(fontSize - 2)
         } else if (currentValue.length < 8 && fontSize < 5) {
             setFontSize(5);
         } else if (elem && elem?.scrollWidth === 246 && currentValue.length > 10) {
@@ -150,12 +152,12 @@ const BasicCalculator = () => {
     }
 
     const includeOperator = (operator: React.MouseEvent<HTMLButtonElement>) => {
-        if(!currentValue) return;
-
+        if(!currentValue && !total) return;
+        
         if(operations.length > 0) {
             equate();
         }
-        setLastValue(currentValue)
+        setLastValue(currentValue || total)
         updateOperations(operator)
     }
 
@@ -163,10 +165,12 @@ const BasicCalculator = () => {
         if (operations.length > 0 && total) {
             basicOperatorFunctions[operations[operations.length - 1]](total, currentValue, setTotal);
             setCurrentValue('')
+            setOperations([])
         } else if (operations.length > 0 && lastValue) {
             basicOperatorFunctions[operations[operations.length - 1]](lastValue, currentValue, setTotal);
             setCurrentValue('')
             setLastValue('')
+            setOperations([])
             return;
         } 
     };
@@ -190,7 +194,7 @@ const BasicCalculator = () => {
                     </div>
                     <div className="solar"></div>
                 </div>
-            <div id="screen" className="screen" style={{fontSize: `${fontSize}vw`, display: fontSize < 5 ? 'flex' : 'block'}}>
+            <div id="screen" className="screen" style={{fontSize: `${fontSize}px`, display: fontSize < 5 ? 'flex' : 'block'}}>
                 {memoryIsActive && isPowerOn ? memory : 
                     currentValue && isPowerOn ? currentValue : 
                         isPowerOn ? total : ''}
