@@ -4,6 +4,11 @@ button {
     background-color: $primary_black;
     color: $super_white;
     font-weight: 700;
+    cursor: pointer;
+}
+
+button:focus {
+    outline: none;
 }
 
 .basic {

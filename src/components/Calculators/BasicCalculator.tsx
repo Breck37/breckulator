@@ -14,17 +14,10 @@ interface MemoryCalcFunctions {
 }
 
 const basicOperatorFunctions: BasicOperatorFunctions = {
-    plus: (a: string, b: string, cFn: (args: any) => string) => {
-        const result = parseInt(a) + parseInt(b);
-        cFn(result);
-        return result;
-    },
-    minus: (a: string, b: string, cFn: (args: any) => string) => {
-        const result = parseInt(a) - parseInt(b);
-        cFn(result);
-        return result;
-    },
-    divide: (a: string, b: string, cfn: (args: any) => string) => cfn(parseInt(a) / parseInt(b)),
+    plus: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) + parseInt(b)),
+    minus: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) - parseInt(b)),
+    multiply: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) * parseInt(b)),
+    divide: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) / parseInt(b)),
 };
 
 
@@ -37,12 +30,6 @@ const BasicCalculator = () => {
     const [total, setTotal] = useState<string | number | any>(0);
     const [isPowerOn, setIsPowerOn] = useState<boolean>(false);
     const [fontSize, setFontSize] = useState(5)
-    console.log({
-        currentValue,
-        operations,
-        lastValue,
-        total
-    })
 
     useEffect(() => {
         var elem = document.getElementById('screen');
@@ -55,8 +42,7 @@ const BasicCalculator = () => {
     }, [currentValue, fontSize])
 
     const basicFunctions: BasicCalcFunctions = {
-        power: isPowerOn && (currentValue || lastValue || memory !== '0') ? () => { 
-            console.log('HIT', memoryIsActive)
+        power: isPowerOn && (currentValue || lastValue || memory !== '0' || total || isNaN(total)) ? () => { 
             resetState();
         } : () => {
             setMemory('0')
@@ -128,25 +114,28 @@ const BasicCalculator = () => {
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         setMemoryIsActive(false);
         if(!isPowerOn) return;
-        if(Boolean(basicOperatorFunctions[event.currentTarget.value])) {
-            includeOperator(event);
-            return;
+
+        if(currentValue === lastValue && operations.length) {
+            const lastValueToSet = currentValue;
+            setLastValue(lastValueToSet);
+            setCurrentValue(event.currentTarget.value);
+        } else {
+            setCurrentValue(currentValue + event.currentTarget.value)
         }
-        setCurrentValue(currentValue + event.currentTarget.value)
     }
 
     const updateOperations = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setOperations([...operations, event.currentTarget.value])
+        setOperations([event.currentTarget.value])
     }
 
     const includeOperator = (operator: React.MouseEvent<HTMLButtonElement>) => {
         if(!currentValue) return;
-        if(operator.currentTarget.value !== operations[operations.length - 1]){
-            setLastValue(currentValue)
-            setTotal(currentValue)
-            setCurrentValue('')
-            updateOperations(operator)
+
+        if(operations.length > 0) {
+            equate();
         }
+        setLastValue(currentValue)
+        updateOperations(operator)
     }
 
     const setFunction = (selectedFunction: React.MouseEvent<HTMLButtonElement>) => {
@@ -154,19 +143,18 @@ const BasicCalculator = () => {
     }
 
     const equate = () => {
-        if(operations.length > 0 && lastValue) {
+        if (operations.length > 0 && total) {
+            basicOperatorFunctions[operations[operations.length - 1]](total, currentValue, setTotal);
+            setCurrentValue('')
+        } else if (operations.length > 0 && lastValue) {
             basicOperatorFunctions[operations[operations.length - 1]](lastValue, currentValue, setTotal);
             setCurrentValue('')
             setLastValue('')
             return;
-        } else if (operations.length > 0 && total) {
-            basicOperatorFunctions[operations[operations.length - 1]](total, currentValue, setTotal);
-            setCurrentValue('')
-        }
+        } 
     };
 
     const handleMemoryChange = (memoryFunction: React.MouseEvent<HTMLButtonElement>) => {
-        if(!currentValue) return;
         const memoryResult = memoryOperatorFunctions[memoryFunction.currentTarget.value](memory, memoryIsActive, currentValue);
         if(memoryResult !== memory) {
             setMemory(memoryResult);
@@ -180,7 +168,7 @@ const BasicCalculator = () => {
             <div className="screen-container">
                 <div className="screen-top">
                     <div className="logo">
-                        <p>Beckulator</p>
+                        <p>Breckulator</p>
                         <h4>7000</h4>
                     </div>
                     <div className="solar"></div>
