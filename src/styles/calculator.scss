@@ -135,8 +135,9 @@ button:focus {
     border-radius: 4px;
     background: gray;
     border: 1px solid $primary_black;
-    align-items: center;
-    text-align: right;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
     overflow: auto;
     white-space: nowrap;
     scroll-behavior: auto;

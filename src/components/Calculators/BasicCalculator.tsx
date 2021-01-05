@@ -32,32 +32,12 @@ const BasicCalculator = () => {
     const [fontSize, setFontSize] = useState(64)
 
     useEffect(() => {
-        var elem = document.getElementById('screen');
+        if(currentValue.length > 5 && fontSize > 62) {
+            setFontSize(62)
+        } else if(currentValue.length > 7 && fontSize > 60) {
+            setFontSize(60)
+        } 
 
-        if(elem &&  elem?.scrollWidth > 380 && fontSize > 2) {
-            setFontSize(fontSize - 2)
-        } else if(elem &&  elem?.scrollWidth > 326 && elem.scrollWidth !== 380 && elem.scrollWidth !== 365 && fontSize > 1) {
-            setFontSize(fontSize - 2)
-        } else if (currentValue.length < 8 && fontSize < 5) {
-            setFontSize(5);
-        } else if (elem && elem?.scrollWidth === 246 && currentValue.length > 10) {
-            setCurrentValue('# too long')
-            setTimeout(() => {
-                setCurrentValue(' ')
-            }, 500);
-            setTimeout(() => {
-                setCurrentValue('# too long')
-            }, 1000);
-            setTimeout(() => {
-                setCurrentValue(' ')
-            }, 1500);
-            setTimeout(() => {
-                setCurrentValue('# too long')
-            }, 2000);
-            setTimeout(() => {
-                setCurrentValue('')
-            }, 2500);
-        }
     }, [currentValue, fontSize])
 
     const basicFunctions: BasicCalcFunctions = {
@@ -109,7 +89,7 @@ const BasicCalculator = () => {
 
     const resetState = () => {
             setMemoryIsActive(false);
-            setFontSize(5);
+            setFontSize(64);
             setTotal(0)
             setCurrentValue('');
             setLastValue('');
@@ -132,7 +112,7 @@ const BasicCalculator = () => {
 
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         setMemoryIsActive(false);
-        if(!isPowerOn) return;
+        if(!isPowerOn || currentValue.length === 9) return;
 
         if(currentValue === lastValue && operations.length) {
             const lastValueToSet = currentValue;
@@ -194,10 +174,12 @@ const BasicCalculator = () => {
                     </div>
                     <div className="solar"></div>
                 </div>
-            <div id="screen" className="screen" style={{fontSize: `${fontSize}px`, display: fontSize < 5 ? 'flex' : 'block'}}>
+            <div id="screen" className="screen" >
+                <span style={{fontSize: `${fontSize}px`, display: fontSize < 5 ? 'flex' : 'block'}}>
                 {memoryIsActive && isPowerOn ? memory : 
-                    currentValue && isPowerOn ? currentValue : 
-                        isPowerOn ? total : ''}
+                    currentValue && isPowerOn ? currentValue.replace(/(.)(?=(\d{3})+$)/g,'$1,') : 
+                        isPowerOn ? String(total).replace(/(.)(?=(\d{3})+$)/g,'$1,') : ''}
+                </span>
             </div>
             </div>
             <div className="basic-keys-container">
