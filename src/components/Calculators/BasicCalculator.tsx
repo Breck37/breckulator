@@ -14,10 +14,14 @@ interface MemoryCalcFunctions {
 }
 
 const basicOperatorFunctions: BasicOperatorFunctions = {
-    plus: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) + parseInt(b)),
-    minus: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) - parseInt(b)),
-    multiply: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) * parseInt(b)),
-    divide: (a: string, b: string, cFn: (args: any) => string) => cFn(parseInt(a) / parseInt(b)),
+    plus: (a: string, b: string, cFn: (args: any) => string) => cFn(parseFloat(a) + parseFloat(b)),
+    minus: (a: string, b: string, cFn: (args: any) => string) => cFn(parseFloat(a) - parseFloat(b)),
+    multiply: (a: string, b: string, cFn: (args: any) => string) => cFn(parseFloat(a) * parseFloat(b)),
+    divide: (a: string, b: string, cFn: (args: any) => string) => {
+        const divisor = parseFloat(b);
+        if (divisor === 0) return cFn(0);
+        return cFn(parseFloat(a) / divisor);
+    },
 };
 
 
@@ -59,20 +63,23 @@ const BasicCalculator = () => {
             }
         },
         square: (a: string) => {
-            const squared = Math.sqrt(parseInt(a));
+            const num = parseFloat(a);
+            if (num < 0) return;
+            const result = Math.sqrt(num);
             if(memoryIsActive) {
-                setMemory(`${squared}`)
+                setMemory(`${result}`)
             } else {
-                setCurrentValue(`${squared}`)
+                setCurrentValue(`${result}`)
             }
         },
         percent: (a: string) => {
+            const result = parseFloat(a) / 100;
             if(memoryIsActive) {
-                setMemory(parseInt(a) / 100 + '')
+                setMemory(result + '')
             } else {
-                setCurrentValue(parseInt(a) / 100 + '')
+                setCurrentValue(result + '')
             }
-            setTotal(parseInt(a) / 100)
+            setTotal(result)
         },
         invert: (a: string) => {
             const entryToInvert = a.split('')
@@ -103,16 +110,19 @@ const BasicCalculator = () => {
             return currentMemory;
         },
         'M-': (currentMemory, memoryIsActive, currentValue) => {
-            return `${parseInt(currentMemory) - parseInt(currentValue)}`
+            return `${parseFloat(currentMemory) - parseFloat(currentValue)}`
         },
         'M+': (currentMemory, memoryIsActive, currentValue) => {
-            return `${parseInt(currentMemory) + parseInt(currentValue)}`
+            return `${parseFloat(currentMemory) + parseFloat(currentValue)}`
         },
     };
 
     const updateCurrentValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         setMemoryIsActive(false);
         if(!isPowerOn || currentValue.length === 9) return;
+
+        const value = event.currentTarget.value;
+        if(value === '.' && currentValue.includes('.')) return;
 
         if(currentValue === lastValue && operations.length) {
             const lastValueToSet = currentValue;
@@ -142,7 +152,7 @@ const BasicCalculator = () => {
     }
 
     const equate = () => {
-        if (operations.length > 0 && total) {
+        if (operations.length > 0 && (total || total === 0) && lastValue === '') {
             basicOperatorFunctions[operations[operations.length - 1]](total, currentValue, setTotal);
             setCurrentValue('')
             setOperations([])
