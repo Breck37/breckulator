@@ -192,6 +192,7 @@ const BasicCalculator = () => {
                 </span>
             </div>
             </div>
+            <div className="crease"></div>
             <div className="basic-keys-container">
                 <div className="top row">
                     <button onClick={setFunction} value="invert" className="operator-key divide">+/-</button>
