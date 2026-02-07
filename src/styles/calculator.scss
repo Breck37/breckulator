@@ -163,10 +163,10 @@ button:focus {
     position: relative;
     background: linear-gradient(
         to bottom,
-        darken($primary-bland, 12%) 0%,
-        darken($primary-bland, 18%) 40%,
-        darken($primary-bland, 8%) 60%,
-        $primary-bland 100%
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.25) 40%,
+        rgba(0, 0, 0, 0.10) 60%,
+        rgba(255, 255, 255, 0.05) 100%
     );
     box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.35),
@@ -180,7 +180,7 @@ button:focus {
         left: 0;
         right: 0;
         height: 1px;
-        background: rgba(0, 0, 0, 0.2);
+        background: rgba(0, 0, 0, 0.25);
     }
 
     &::after {
@@ -190,7 +190,7 @@ button:focus {
         left: 0;
         right: 0;
         height: 1px;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.2);
     }
 }
 
@@ -209,6 +209,14 @@ button:focus {
     > button {
         border-radius: 4px;
         height: 65%;
+
+        &:hover {
+            filter: brightness(1.1);
+        }
+
+        &:active {
+            filter: brightness(0.95);
+        }
     }
 }
 
@@ -221,6 +229,26 @@ button:focus {
     > button {
         flex: 1;
         margin: 4px;
+        box-shadow:
+            0 3px 1px rgba(0, 0, 0, 0.4),
+            0 4px 6px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        transition: box-shadow 0.1s ease, transform 0.1s ease;
+
+        &:hover {
+            box-shadow:
+                0 3px 1px rgba(0, 0, 0, 0.45),
+                0 5px 8px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        &:active {
+            transform: translateY(2px);
+            box-shadow:
+                0 1px 1px rgba(0, 0, 0, 0.4),
+                0 1px 2px rgba(0, 0, 0, 0.2),
+                inset 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
     }
 }
 
@@ -258,6 +286,27 @@ button:focus {
     transform: skewX(-4deg);
     font-size: 42px;
     flex: 1;
+    box-shadow:
+        0 3px 1px rgba(0, 0, 0, 0.4),
+        0 4px 6px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: box-shadow 0.1s ease, transform 0.1s ease;
+
+    &:hover {
+        box-shadow:
+            0 3px 1px rgba(0, 0, 0, 0.45),
+            0 5px 8px rgba(0, 0, 0, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        brightness: 1.05;
+    }
+
+    &:active {
+        transform: skewX(-4deg) translateY(2px);
+        box-shadow:
+            0 1px 1px rgba(0, 0, 0, 0.4),
+            0 1px 2px rgba(0, 0, 0, 0.2),
+            inset 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
 }
 
 .basic-arithmetic {
@@ -300,6 +349,26 @@ button:focus {
     > button {
         flex: 0.208;
         margin: 4px;
+        box-shadow:
+            0 3px 1px rgba(0, 0, 0, 0.4),
+            0 4px 6px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        transition: box-shadow 0.1s ease, transform 0.1s ease;
+
+        &:hover {
+            box-shadow:
+                0 3px 1px rgba(0, 0, 0, 0.45),
+                0 5px 8px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        &:active {
+            transform: translateY(2px);
+            box-shadow:
+                0 1px 1px rgba(0, 0, 0, 0.4),
+                0 1px 2px rgba(0, 0, 0, 0.2),
+                inset 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
 
         @media screen and (max-width: 412px) {
             flex: 0.225;
