@@ -164,11 +164,17 @@ button:focus {
 .basic > .crease {
     width: 100%;
     height: 12px;
-    background-color: $primary-bland;
+    background: linear-gradient(
+        to bottom,
+        $primary-bland 0%,
+        darken($primary-bland, 6%) 30%,
+        darken($primary-bland, 8%) 50%,
+        darken($primary-bland, 6%) 70%,
+        $primary-bland 100%
+    );
     box-shadow:
-        inset 0 4px 6px rgba(0, 0, 0, 0.3),
-        inset 0 -3px 5px rgba(255, 255, 255, 0.15),
-        inset 0 1px 2px rgba(0, 0, 0, 0.15);
+        inset 0 4px 6px rgba(0, 0, 0, 0.2),
+        inset 0 -3px 5px rgba(255, 255, 255, 0.1);
 }
 
 .basic > .basic-keys-container {
@@ -379,68 +385,43 @@ button:focus {
 }
 
 // Worn text effect for heavily used buttons
-// The center of the text fades as if the print has rubbed off
+// Overlays a gradient that masks the center of the text to look faded
 
-@mixin worn-text-heavy {
-    $faded: rgba(red($super_white), green($super_white), blue($super_white), 0.35);
-    $faded-mid: rgba(red($super_white), green($super_white), blue($super_white), 0.25);
-    background: linear-gradient(
-        to bottom,
-        $super_white 0%,
-        $faded 40%,
-        $faded-mid 60%,
-        $super_white 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+@mixin worn-overlay($opacity) {
+    position: relative;
+    overflow: hidden;
 
-@mixin worn-text-medium {
-    $faded: rgba(red($super_white), green($super_white), blue($super_white), 0.5);
-    $faded-mid: rgba(red($super_white), green($super_white), blue($super_white), 0.45);
-    background: linear-gradient(
-        to bottom,
-        $super_white 0%,
-        $faded 45%,
-        $faded-mid 55%,
-        $super_white 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-@mixin worn-text-light {
-    $faded: rgba(red($super_white), green($super_white), blue($super_white), 0.65);
-    $faded-mid: rgba(red($super_white), green($super_white), blue($super_white), 0.6);
-    background: linear-gradient(
-        to bottom,
-        $super_white 0%,
-        $faded 45%,
-        $faded-mid 55%,
-        $super_white 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            ellipse at center,
+            $primary_black $opacity,
+            transparent 70%
+        );
+        pointer-events: none;
+    }
 }
 
 // Heavy wear - most used buttons
 .basic-key.clear,
 .basic-key.zero {
-    @include worn-text-heavy;
+    @include worn-overlay(35%);
 }
 
 // Medium wear
 .basic-key.one,
 .operator-key.plus {
-    @include worn-text-medium;
+    @include worn-overlay(25%);
 }
 
 // Light wear
 .basic-key.\35,
 .basic-key.two,
 .operator-key.divide {
-    @include worn-text-light;
+    @include worn-overlay(15%);
 }
