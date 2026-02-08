@@ -21,6 +21,10 @@ button:focus {
     align-items: center;
     -webkit-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.62);
     box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.62);
+    background-image:
+        radial-gradient(ellipse at 15% 10%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 95%, rgba(0, 0, 0, 0.04) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.02) 0%, transparent 70%);
 
     @media screen and (max-width: 416px) {
         width: 100%;
@@ -372,4 +376,71 @@ button:focus {
 
 .red {
     background-color: $primary-power-red;
+}
+
+// Worn text effect for heavily used buttons
+// The center of the text fades as if the print has rubbed off
+
+@mixin worn-text-heavy {
+    $faded: rgba(red($super_white), green($super_white), blue($super_white), 0.35);
+    $faded-mid: rgba(red($super_white), green($super_white), blue($super_white), 0.25);
+    background: linear-gradient(
+        to bottom,
+        $super_white 0%,
+        $faded 40%,
+        $faded-mid 60%,
+        $super_white 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@mixin worn-text-medium {
+    $faded: rgba(red($super_white), green($super_white), blue($super_white), 0.5);
+    $faded-mid: rgba(red($super_white), green($super_white), blue($super_white), 0.45);
+    background: linear-gradient(
+        to bottom,
+        $super_white 0%,
+        $faded 45%,
+        $faded-mid 55%,
+        $super_white 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@mixin worn-text-light {
+    $faded: rgba(red($super_white), green($super_white), blue($super_white), 0.65);
+    $faded-mid: rgba(red($super_white), green($super_white), blue($super_white), 0.6);
+    background: linear-gradient(
+        to bottom,
+        $super_white 0%,
+        $faded 45%,
+        $faded-mid 55%,
+        $super_white 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+// Heavy wear - most used buttons
+.basic-key.clear,
+.basic-key.zero {
+    @include worn-text-heavy;
+}
+
+// Medium wear
+.basic-key.one,
+.operator-key.plus {
+    @include worn-text-medium;
+}
+
+// Light wear
+.basic-key.\35,
+.basic-key.two,
+.operator-key.divide {
+    @include worn-text-light;
 }
